@@ -21,12 +21,42 @@ APP_CSS = """
 <style>
     .stApp {
         background:
-            radial-gradient(circle at 18% 12%, rgba(76, 81, 92, .32), transparent 34rem),
-            radial-gradient(circle at 84% 8%, rgba(38, 78, 88, .28), transparent 32rem),
-            linear-gradient(135deg, #111315 0%, #1b1d21 48%, #0f1114 100%);
+            radial-gradient(circle at 16% 12%, rgba(66, 69, 76, .34), transparent 32rem),
+            radial-gradient(circle at 82% 10%, rgba(52, 69, 75, .24), transparent 34rem),
+            radial-gradient(circle at 58% 86%, rgba(30, 44, 52, .28), transparent 36rem),
+            linear-gradient(135deg, #0f1113 0%, #181a1f 47%, #0b0d10 100%);
         background-size: cover;
         background-attachment: fixed;
         color: #e8eaed;
+    }
+
+    .stApp::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        opacity: .52;
+        background-image:
+            linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: radial-gradient(circle at 52% 38%, black 0%, black 46%, transparent 78%);
+        animation: gridDrift 22s linear infinite;
+    }
+
+    .stApp::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+            linear-gradient(120deg, transparent 0%, rgba(138, 180, 248, .08) 42%, transparent 56%),
+            linear-gradient(250deg, transparent 0%, rgba(129, 201, 149, .055) 38%, transparent 60%);
+        background-size: 220% 220%;
+        mix-blend-mode: screen;
+        animation: signalSweep 18s ease-in-out infinite alternate;
     }
 
     [data-testid="stHeader"] {
@@ -42,6 +72,8 @@ APP_CSS = """
     .block-container {
         padding-top: 2rem;
         padding-bottom: 3rem;
+        position: relative;
+        z-index: 2;
     }
 
     .hero {
@@ -122,7 +154,114 @@ APP_CSS = """
     .stSlider [data-baseweb="slider"] div {
         color: #8ab4f8;
     }
+
+    .market-flow {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+        opacity: .56;
+    }
+
+    .market-flow svg {
+        width: 118vw;
+        height: 118vh;
+        transform: translate(-6vw, -7vh);
+        filter: drop-shadow(0 0 14px rgba(138, 180, 248, .14));
+        animation: fieldFloat 24s ease-in-out infinite alternate;
+    }
+
+    .flow-line {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 24 18;
+        animation: flowDash 10s linear infinite;
+    }
+
+    .flow-line.primary {
+        stroke: rgba(138, 180, 248, .48);
+        stroke-width: 1.35;
+    }
+
+    .flow-line.secondary {
+        stroke: rgba(154, 160, 166, .22);
+        stroke-width: 1;
+        animation-duration: 14s;
+        animation-direction: reverse;
+    }
+
+    .flow-line.accent {
+        stroke: rgba(129, 201, 149, .34);
+        stroke-width: 1.15;
+        animation-duration: 12s;
+    }
+
+    .flow-node {
+        fill: rgba(232, 234, 237, .48);
+        animation: nodePulse 4.8s ease-in-out infinite;
+    }
+
+    .flow-node.accent {
+        fill: rgba(129, 201, 149, .68);
+        animation-delay: -1.6s;
+    }
+
+    @keyframes gridDrift {
+        from { background-position: 0 0, 0 0; }
+        to { background-position: 64px 64px, 64px 64px; }
+    }
+
+    @keyframes signalSweep {
+        from { background-position: 0% 42%, 100% 64%; opacity: .54; }
+        to { background-position: 100% 58%, 0% 40%; opacity: .86; }
+    }
+
+    @keyframes flowDash {
+        from { stroke-dashoffset: 0; }
+        to { stroke-dashoffset: -84; }
+    }
+
+    @keyframes fieldFloat {
+        from { transform: translate(-6vw, -7vh) scale(1); }
+        to { transform: translate(-4vw, -5vh) scale(1.025); }
+    }
+
+    @keyframes nodePulse {
+        0%, 100% { opacity: .22; r: 2.2; }
+        50% { opacity: .9; r: 3.8; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stApp::before,
+        .stApp::after,
+        .market-flow svg,
+        .flow-line,
+        .flow-node {
+            animation: none;
+        }
+    }
 </style>
+"""
+
+
+FLOW_BACKGROUND = """
+<div class="market-flow" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
+        <path class="flow-line secondary" d="M-40 165 C 130 112, 240 210, 390 166 S 650 84, 820 134 S 1080 246, 1488 118" />
+        <path class="flow-line primary" d="M-60 310 C 96 286, 178 186, 328 226 S 552 408, 724 322 S 988 142, 1168 238 S 1336 388, 1490 300" />
+        <path class="flow-line accent" d="M-80 465 C 120 514, 258 358, 438 404 S 688 604, 872 506 S 1078 342, 1238 398 S 1392 508, 1518 436" />
+        <path class="flow-line secondary" d="M-60 650 C 158 592, 310 706, 466 642 S 704 474, 864 558 S 1068 770, 1246 672 S 1408 546, 1510 612" />
+        <path class="flow-line primary" d="M-30 790 C 134 724, 244 812, 384 754 S 584 620, 742 674 S 968 850, 1134 780 S 1310 654, 1500 724" />
+        <circle class="flow-node" cx="328" cy="226" r="3" />
+        <circle class="flow-node accent" cx="724" cy="322" r="3" />
+        <circle class="flow-node" cx="872" cy="506" r="3" />
+        <circle class="flow-node accent" cx="1168" cy="238" r="3" />
+        <circle class="flow-node" cx="1246" cy="672" r="3" />
+        <circle class="flow-node accent" cx="742" cy="674" r="3" />
+    </svg>
+</div>
 """
 
 
@@ -372,7 +511,7 @@ def format_money(value: float) -> str:
     return f"${value:,.0f}"
 
 
-st.markdown(APP_CSS, unsafe_allow_html=True)
+st.markdown(APP_CSS + FLOW_BACKGROUND, unsafe_allow_html=True)
 
 st.markdown(
     """
