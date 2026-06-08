@@ -529,6 +529,13 @@ st.markdown(
 with st.sidebar:
     st.header("策略參數")
     uploaded = st.file_uploader("上傳歷史股價 CSV", type=["csv"])
+    sample_csv = make_demo_prices(120).to_csv(index=False).encode("utf-8-sig")
+    st.download_button(
+        "下載範例歷史股價 CSV",
+        data=sample_csv,
+        file_name="sample_stock_prices.csv",
+        mime="text/csv",
+    )
     fast_window = st.slider("短期均線天數", 3, 40, 10)
     slow_window = st.slider("長期均線天數", 10, 120, 30)
     initial_cash = st.number_input("初始資金", min_value=10_000, value=1_000_000, step=10_000)
