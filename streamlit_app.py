@@ -538,6 +538,7 @@ with st.sidebar:
     )
     fast_window = st.slider("短期均線天數", 3, 40, 10)
     slow_window = st.slider("長期均線天數", 10, 120, 30)
+    st.caption("均線天數是每一天往前回看幾個交易日的平均值，線條會每天重新計算並連成完整趨勢。")
     initial_cash = st.number_input("初始資金", min_value=10_000, value=1_000_000, step=10_000)
     first_entry_ratio = st.slider("首次進場資金比例", 5, 100, 35) / 100
     add_entry_ratio = st.slider("分批加碼資金比例", 5, 60, 20) / 100
@@ -584,6 +585,11 @@ metric_cols[3].metric("勝率", f"{win_rate:.1%}")
 
 st.caption(f"目前資料來源：{source_label}，共 {len(prices)} 筆交易日。")
 st.plotly_chart(make_chart(prices, trades), width="stretch")
+st.caption(
+    f"讀圖方式：短期均線是每個交易日取最近 {fast_window} 個交易日的收盤價平均，"
+    f"長期均線則取最近 {slow_window} 個交易日平均；因此不是只顯示 {fast_window} 天，"
+    "而是把每天算出的平均值連起來看趨勢。"
+)
 
 tab_overview, tab_logic, tab_records, tab_data = st.tabs(
     ["成果總覽", "策略邏輯", "交易紀錄", "資料檢查"]
